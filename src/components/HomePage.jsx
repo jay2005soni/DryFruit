@@ -130,7 +130,7 @@ export default function HomePage() {
 
   return (
     <div className="font-sans">
-      <Header />
+      
 
       {/* 🔹 Hero Slider */}
       <div className="relative w-full h-[500px] overflow-hidden">
