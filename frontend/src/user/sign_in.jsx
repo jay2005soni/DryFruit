@@ -67,7 +67,7 @@ const handleLogin = async (e) => {
   e.preventDefault();
 
   // 🚀 Simply redirect to homepage without validation or API
-  navigate("/home");
+  navigate("/dashboard");
 };
 
 
