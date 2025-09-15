@@ -1,10 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import adminRoutes from "./routes/adminRoutes.js";
+import adminRoutes from "./routes/adminAuth.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import sliderRoutes from "./routes/sliderRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import couponRoutes from "./routes/couponRoutes.js";
 import path from "path";
 import cors from "cors";
 import { fileURLToPath } from "url";
@@ -25,9 +26,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/slider", sliderRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/coupons", couponRoutes);
 
-// ✅ --- NEW GLOBAL ERROR HANDLER --- ✅
-// This acts as a safety net to catch any and all errors.
+
+// --- Global Error Handler ---
 const errorHandler = (err, req, res, next) => {
   console.error("--- UNHANDLED ERROR ---", err);
   res.status(500).json({
@@ -35,10 +37,7 @@ const errorHandler = (err, req, res, next) => {
     error: err.message,
   });
 };
-
-// This MUST be the last middleware added.
 app.use(errorHandler);
-// ✅ ------------------------------ ✅
 
 // --- Server Start ---
 const PORT = process.env.PORT || 5000;

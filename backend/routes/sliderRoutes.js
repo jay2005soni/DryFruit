@@ -1,14 +1,17 @@
 import express from "express";
-import upload from "../middleware/uploadMiddleware.js";
-import {
-  addSlider,  getSliders,updateSlider,deleteSlider,
-} from "../controller/sliderController.js";
+import { getSliders, addSlider, updateSlider, deleteSlider } from "../controller/sliderController.js";
+import { uploadSlider } from "../middleware/uploadMiddleware.js";
+import { verifyAdmin } from "../middleware/auth.js";
+
 
 const router = express.Router();
 
-router.post("/add", upload.single("image"), addSlider); // Create
-router.get("/all", getSliders); // Read
-router.put("/update/:id", upload.single("image"), updateSlider); // Update
-router.delete("/delete/:id", deleteSlider); // Delete
+// Public GET
+router.get("/", getSliders);
+
+// Admin CRUD
+router.post("/create", verifyAdmin, uploadSlider, addSlider);
+router.put("/update/:id", verifyAdmin, uploadSlider, updateSlider);
+router.delete("/delete/:id", verifyAdmin, deleteSlider);
 
 export default router;

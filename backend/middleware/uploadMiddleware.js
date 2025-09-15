@@ -2,16 +2,43 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Ensure the uploads directory exists
-const uploadDir = "uploads/";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// --- Helper function to ensure directory exists ---
+const ensureDir = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
 
-// Storage config
-const storage = multer.diskStorage({
+// --- Storage config for category ---
+const categoryStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    const dir = "uploads/category/";
+    ensureDir(dir);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+// --- Storage config for product ---
+const productStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = "uploads/product/";
+    ensureDir(dir);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+// --- Storage config for slider ---
+const sliderStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = "uploads/slider/";
+    ensureDir(dir);
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -27,15 +54,15 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer instance
-const upload = multer({ storage, fileFilter });
+// Multer instances
+export const uploadCategory = multer({ storage: categoryStorage, fileFilter }).single("image");
+export const uploadProduct = multer({ storage: productStorage, fileFilter }).single("image");
+export const uploadSlider = multer({ storage: sliderStorage, fileFilter }).single("image");
 
-// ✅ Exports
-// For single image (e.g., categories, sliders)
-export const uploadSingle = upload.single("image");
 
-// For multiple images (e.g., products)
-export const uploadMultiple = upload.array("images", 5);
-
-// Default export → so existing code like `upload.array("images", 5)` works
-export default upload;
+// ✅ Default export (optional)
+export default {
+  uploadCategory,
+  uploadProduct,
+  uploadSlider,
+};

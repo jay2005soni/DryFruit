@@ -1,16 +1,16 @@
 import express from "express";
-import upload from "../middleware/uploadMiddleware.js";
-import { addProduct, getProducts, getProductById } from "../controller/productController.js";
+import { getProducts, addProduct, updateProduct, deleteProduct } from "../controller/productController.js";
+import { uploadProduct } from "../middleware/uploadMiddleware.js";
+import { verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
-const logRoute = (req, res, next) => {
-  console.log(`[2. ROUTER] Request reached /api/products router.`);
-  next();
-};
-// Upload multiple images for product (max 5 images)
-router.post("/add", upload.array("images", 5), addProduct);
+// Public GET
 router.get("/", getProducts);
-router.get("/:id", getProductById);
+
+// Admin CRUD
+router.post("/create", verifyAdmin, uploadProduct, addProduct);
+router.put("/update/:id", verifyAdmin, uploadProduct, updateProduct);
+router.delete("/delete/:id", verifyAdmin, deleteProduct);
 
 export default router;
